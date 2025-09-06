@@ -9,6 +9,7 @@ def start(message):
 
 @bot.message_handler(commands=['ban'])
 def ban_user(message):
+    somethingidk = message.text
     if message.reply_to_message: #проверка на то, что эта команда была вызвана в ответ на сообщение 
         chat_id = message.chat.id # сохранение id чата
          # сохранение id и статуса пользователя, отправившего сообщение
@@ -23,4 +24,24 @@ def ban_user(message):
     else:
         bot.reply_to(message, "Эта команда должна быть использована в ответ на сообщение пользователя, которого вы хотите забанить.")
 
+@bot.message_handler(func=lambda message: True)
+def banforlink(message):
+    link = message.text
+    if link.count("https:/") == 1:
+        chat_id = message.chat.id # сохранение id чата
+         # сохранение id и статуса пользователя, отправившего сообщение
+        
+        user_id = message.from_user.id
+
+        user_status = bot.get_chat_member(chat_id, user_id).status
+        if user_status == 'administrator' or user_status == 'creator':
+            bot.reply_to(message, "Невозможно забанить администратора.")
+        else:
+            bot.ban_chat_member(chat_id, user_id) # пользователь с user_id будет забанен в чате с chat_id
+
+    else:
+        pass
+
+
 bot.infinity_polling(none_stop=True)
+
